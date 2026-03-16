@@ -70,6 +70,8 @@ on temporary loading every session.
 - The popup toggles the current host on or off.
 - The options page edits a list of blocked hosts stored in `browser.storage.sync`
   when Firefox Sync is available, and mirrors it locally for fast page checks.
+- If sync writes fail later, the extension automatically falls back to local
+  storage instead of breaking rule updates.
 - The background script cancels requests of type `image` and
   `imageset` when the originating page matches one of your saved hosts.
 - The content script hides image tags and inline background images on matching

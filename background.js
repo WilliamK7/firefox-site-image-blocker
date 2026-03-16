@@ -1,6 +1,7 @@
 const STORAGE_KEY = "blockedDomains";
 
 let blockedDomainsCache = [];
+let blockedDomainsBySpecificity = [];
 let blockedDomainsReady = false;
 let blockedDomainsPromise = null;
 let primaryStorageAreaName = "sync";
@@ -54,20 +55,30 @@ function normalizeDomainList(rawDomains) {
   return [...new Set(rawDomains.map(normalizeDomainInput).filter(Boolean))].sort();
 }
 
-function findMatchingDomain(rawValue, blockedDomains) {
+function updateBlockedDomainsCache(rawDomains) {
+  blockedDomainsCache = normalizeDomainList(rawDomains);
+  blockedDomainsBySpecificity = [...blockedDomainsCache].sort(
+    (left, right) => right.length - left.length
+  );
+  blockedDomainsReady = true;
+  return blockedDomainsCache;
+}
+
+function findMatchingDomain(
+  rawValue,
+  blockedDomains = blockedDomainsBySpecificity
+) {
   const normalizedDomain = normalizeDomainInput(rawValue);
 
   if (!normalizedDomain) {
     return null;
   }
 
-  return [...blockedDomains]
-    .sort((left, right) => right.length - left.length)
-    .find(
-      (blockedDomain) =>
-        normalizedDomain === blockedDomain ||
-        normalizedDomain.endsWith(`.${blockedDomain}`)
-    ) ?? null;
+  return blockedDomains.find(
+    (blockedDomain) =>
+      normalizedDomain === blockedDomain ||
+      normalizedDomain.endsWith(`.${blockedDomain}`)
+  ) ?? null;
 }
 
 async function loadBlockedDomains() {
@@ -89,6 +100,27 @@ async function mirrorDomainsToLocal(domains) {
   await browser.storage.local.set({ [STORAGE_KEY]: domains });
 }
 
+async function persistDomains(domains) {
+  const storageArea = getStorageArea(primaryStorageAreaName);
+
+  try {
+    await storageArea.set({ [STORAGE_KEY]: domains });
+  } catch (error) {
+    if (primaryStorageAreaName !== "sync") {
+      throw error;
+    }
+
+    console.warn("storage.sync write failed, falling back to storage.local", error);
+    primaryStorageAreaName = "local";
+    await browser.storage.local.set({ [STORAGE_KEY]: domains });
+    return;
+  }
+
+  if (primaryStorageAreaName === "sync") {
+    await mirrorDomainsToLocal(domains);
+  }
+}
+
 async function initializeStorage() {
   const localResult = await browser.storage.local.get({ [STORAGE_KEY]: [] });
   const localDomains = normalizeDomainList(localResult[STORAGE_KEY]);
@@ -104,9 +136,8 @@ async function initializeStorage() {
         await syncStorage.set({ [STORAGE_KEY]: syncDomains });
       }
 
-      blockedDomainsCache = syncDomains;
+      updateBlockedDomainsCache(syncDomains);
       primaryStorageAreaName = "sync";
-      blockedDomainsReady = true;
       await mirrorDomainsToLocal(syncDomains);
       return blockedDomainsCache;
     } catch (error) {
@@ -114,23 +145,14 @@ async function initializeStorage() {
     }
   }
 
-  blockedDomainsCache = localDomains;
+  updateBlockedDomainsCache(localDomains);
   primaryStorageAreaName = "local";
-  blockedDomainsReady = true;
   return blockedDomainsCache;
 }
 
 async function saveBlockedDomains(rawDomains) {
-  blockedDomainsCache = normalizeDomainList(rawDomains);
-  blockedDomainsReady = true;
-  const storageArea = getStorageArea(primaryStorageAreaName);
-
-  await storageArea.set({ [STORAGE_KEY]: blockedDomainsCache });
-
-  if (primaryStorageAreaName === "sync") {
-    await mirrorDomainsToLocal(blockedDomainsCache);
-  }
-
+  updateBlockedDomainsCache(rawDomains);
+  await persistDomains(blockedDomainsCache);
   return blockedDomainsCache;
 }
 
@@ -280,10 +302,9 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     return;
   }
 
-  blockedDomainsCache = normalizeDomainList(changes[STORAGE_KEY].newValue);
-  blockedDomainsReady = true;
+  updateBlockedDomainsCache(changes[STORAGE_KEY].newValue);
 
-  if (areaName === "sync") {
+  if (areaName === "sync" && primaryStorageAreaName === "sync") {
     void mirrorDomainsToLocal(blockedDomainsCache);
   }
 });
