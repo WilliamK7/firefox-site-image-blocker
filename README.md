@@ -55,7 +55,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build-xpi.ps1
 The packaged file will be created in `dist/` with a name like:
 
 ```text
-site-image-blocker-example.com-0.2.1.xpi
+site-image-blocker-example.com-1.0.0.xpi
 ```
 
 ## GitHub Releases
@@ -66,8 +66,8 @@ package whenever you push a tag that starts with `v`.
 Example:
 
 ```powershell
-git tag v0.2.1
-git push origin v0.2.1
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 That workflow will:

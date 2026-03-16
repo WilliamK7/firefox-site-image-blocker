@@ -21,7 +21,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build-xpi.ps1
 Expected package for this version:
 
 ```text
-dist/site-image-blocker-example.com-0.2.1.xpi
+dist/site-image-blocker-example.com-1.0.0.xpi
 ```
 
 ## Suggested AMO metadata
