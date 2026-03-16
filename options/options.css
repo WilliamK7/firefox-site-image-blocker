@@ -94,6 +94,8 @@ h1 {
 }
 
 .intro {
+  display: inline-block;
+  width: max-content;
   max-width: none;
   white-space: nowrap;
   color: var(--muted-text);
@@ -243,6 +245,8 @@ button {
   }
 
   .intro {
+    display: block;
+    width: auto;
     white-space: normal;
   }
 

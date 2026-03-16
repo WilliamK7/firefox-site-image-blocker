@@ -60,8 +60,8 @@ site-image-blocker-example.com-0.2.1.xpi
 
 ## GitHub Releases
 
-This repository includes a GitHub Actions workflow that builds and publishes the
-extension package whenever you push a tag that starts with `v`.
+This repository includes a GitHub Actions workflow that builds the extension
+package whenever you push a tag that starts with `v`.
 
 Example:
 
@@ -74,7 +74,10 @@ That workflow will:
 
 - build the `.xpi` package
 - upload it as a workflow artifact
-- attach it to a GitHub Release automatically
+
+Do not attach the unsigned workflow artifact directly to a public GitHub
+Release. Stable Firefox installs require a Mozilla-signed package. If you
+publish a release for users, upload the signed `.xpi` you receive from AMO.
 
 ## How to keep it installed after restart
 
