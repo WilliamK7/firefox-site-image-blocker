@@ -32,6 +32,18 @@
             <button type="submit">Add</button>
           </div>
         </form>
+        <div class="tool-row">
+          <button id="reloadTabsButton" class="secondary-button" type="button">
+            Reload affected tabs
+          </button>
+          <button id="exportRulesButton" class="secondary-button" type="button">
+            Export list
+          </button>
+          <button id="importRulesButton" class="secondary-button" type="button">
+            Import list
+          </button>
+          <input id="importFileInput" type="file" accept=".json,.txt" hidden>
+        </div>
         <p class="storage-note" id="storageNote">Checking whether Firefox Sync is available...</p>
         <p class="feedback" id="feedback">Changes take effect after a page reload.</p>
       </section>

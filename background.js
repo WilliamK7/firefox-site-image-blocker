@@ -271,6 +271,16 @@ async function toggleDomain(rawDomain, rawTargetDomain) {
   };
 }
 
+async function replaceDomains(rawDomains) {
+  const nextDomains = await saveBlockedDomains(rawDomains);
+
+  return {
+    domains: nextDomains,
+    ok: true,
+    ...getStorageMetadata()
+  };
+}
+
 function shouldBlockImageRequest(details, blockedDomains) {
   if (!blockedDomains.length) {
     return false;
@@ -297,6 +307,36 @@ async function injectHideImagesScript(details) {
   } catch (error) {
     console.warn("Failed to inject hide-images.js", error);
   }
+}
+
+async function reloadAffectedTabs(rawDomains) {
+  const domains = normalizeDomainList(rawDomains);
+  const tabs = await browser.tabs.query({});
+  let refreshedTabs = 0;
+
+  for (const tab of tabs) {
+    if (!tab.id || !tab.url || !/^https?:/i.test(tab.url)) {
+      continue;
+    }
+
+    if (!findMatchingDomain(tab.url, domains)) {
+      continue;
+    }
+
+    try {
+      await browser.tabs.reload(tab.id);
+      refreshedTabs += 1;
+    } catch (error) {
+      console.warn("Failed to reload affected tab", { error, tabId: tab.id });
+    }
+  }
+
+  return {
+    domains,
+    ok: true,
+    refreshedTabs,
+    ...getStorageMetadata()
+  };
 }
 
 browser.runtime.onInstalled.addListener(() => {
@@ -344,8 +384,14 @@ browser.runtime.onMessage.addListener((message) => {
     case "get-storage-info":
       return loadBlockedDomains().then(() => getStorageMetadata());
 
+    case "reload-affected-tabs":
+      return reloadAffectedTabs(message.domains);
+
     case "remove-domain":
       return removeDomain(message.domain);
+
+    case "replace-domains":
+      return replaceDomains(message.domains);
 
     case "toggle-domain":
       return toggleDomain(message.domain, message.targetDomain);

@@ -89,6 +89,19 @@ button {
   cursor: pointer;
 }
 
+.tool-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.secondary-button {
+  border: 1px solid #235243;
+  background: transparent;
+  color: #235243;
+}
+
 .feedback {
   margin: 12px 0 0;
   color: #5e584d;
@@ -168,6 +181,10 @@ button {
   .input-row,
   .rule-item {
     grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .tool-row {
     display: grid;
   }
 

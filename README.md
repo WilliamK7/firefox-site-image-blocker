@@ -12,6 +12,7 @@ selected websites and can sync the blocked-site list through Firefox Sync.
 - Saves blocked hosts to Firefox Sync when available so the list can follow
   your Firefox profile to other desktop devices.
 - Injects the page-hiding script only on matching sites instead of every page.
+- Lets you export, import, and bulk-refresh affected tabs from the settings page.
 
 ## Project structure
 
@@ -71,6 +72,8 @@ on temporary loading every session.
 - The popup toggles the current host on or off.
 - The options page edits a list of blocked hosts stored in `browser.storage.sync`
   when Firefox Sync is available, and mirrors it locally for fast page checks.
+- The settings page can export the rule list, import it again later, and reload
+  all currently open tabs that match the saved rules.
 - If sync writes fail later, the extension automatically falls back to local
   storage instead of breaking rule updates.
 - The background script cancels requests of type `image` and
