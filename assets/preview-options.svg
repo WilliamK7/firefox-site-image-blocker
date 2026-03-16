@@ -8,8 +8,7 @@
   <rect width="1280" height="800" fill="url(#page)" />
   <rect x="90" y="54" width="1100" height="132" rx="28" fill="#fffaf1" stroke="#dbc9a6" stroke-width="2" />
   <text x="138" y="108" fill="#566555" font-size="16" font-family="Segoe UI, Arial, sans-serif" letter-spacing="4">FIREFOX EXTENSION</text>
-  <text x="138" y="150" fill="#1f1d19" font-size="42" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Choose where images</text>
-  <text x="138" y="192" fill="#1f1d19" font-size="42" font-family="Segoe UI, Arial, sans-serif" font-weight="700">should be blocked</text>
+  <text x="138" y="158" fill="#1f1d19" font-size="34" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Choose where images should be blocked</text>
   <rect x="90" y="220" width="1100" height="180" rx="28" fill="#ffffff" fill-opacity="0.75" stroke="#d8c7a7" stroke-width="2" />
   <text x="130" y="268" fill="#1f1d19" font-size="24" font-family="Segoe UI, Arial, sans-serif" font-weight="700">New blocked host</text>
   <rect x="130" y="290" width="700" height="58" rx="18" fill="#fffcf6" stroke="#cdbb97" stroke-width="2" />
@@ -24,7 +23,7 @@
   <text x="630" y="392" text-anchor="middle" fill="#235243" font-size="18" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Import list</text>
   <rect x="90" y="432" width="1100" height="292" rx="28" fill="#ffffff" fill-opacity="0.75" stroke="#d8c7a7" stroke-width="2" />
   <text x="130" y="486" fill="#1f1d19" font-size="28" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Blocked hosts</text>
-  <text x="1034" y="486" fill="#5e584d" font-size="20" font-family="Segoe UI, Arial, sans-serif">3 rules</text>
+  <text x="1034" y="486" fill="#5e584d" font-size="20" font-family="Segoe UI, Arial, sans-serif">2 rules</text>
   <line x1="130" y1="520" x2="1150" y2="520" stroke="#d8c7a7" stroke-width="2" />
   <text x="130" y="566" fill="#1f1d19" font-size="26" font-family="Segoe UI, Arial, sans-serif" font-weight="700">example.com</text>
   <text x="130" y="596" fill="#5e584d" font-size="18" font-family="Segoe UI, Arial, sans-serif">Also matches subdomains of example.com.</text>
