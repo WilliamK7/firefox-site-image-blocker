@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" width="720" height="520">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7f4ec" />
+      <stop offset="100%" stop-color="#e7dcc6" />
+    </linearGradient>
+  </defs>
+  <rect width="720" height="520" rx="32" fill="url(#bg)" />
+  <rect x="180" y="50" width="360" height="420" rx="32" fill="#fbf7ef" stroke="#cdbb97" stroke-width="2" />
+  <text x="220" y="102" fill="#6a6355" font-size="14" font-family="Segoe UI, Arial, sans-serif" letter-spacing="3">FIREFOX EXTENSION</text>
+  <text x="220" y="145" fill="#1d1d1b" font-size="34" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Site Image Blocker</text>
+  <rect x="220" y="172" width="196" height="34" rx="17" fill="#d9efe4" />
+  <text x="238" y="194" fill="#1f5c4f" font-size="15" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Using Firefox Sync</text>
+  <text x="220" y="238" fill="#48453d" font-size="17" font-family="Segoe UI, Arial, sans-serif">Images are blocked for this site.</text>
+  <rect x="220" y="266" width="280" height="94" rx="20" fill="#ffffff" stroke="#d9cfba" stroke-width="2" />
+  <text x="244" y="300" fill="#6a6355" font-size="14" font-family="Segoe UI, Arial, sans-serif">Current host</text>
+  <text x="244" y="334" fill="#1d1d1b" font-size="24" font-family="Segoe UI, Arial, sans-serif" font-weight="700">news.example.com</text>
+  <text x="220" y="392" fill="#4a463f" font-size="15" font-family="Segoe UI, Arial, sans-serif">Active rule: example.com</text>
+  <rect x="220" y="415" width="280" height="34" rx="17" fill="#1f5c4f" />
+  <text x="274" y="438" fill="#f9f5ec" font-size="16" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Allow images on this site</text>
+</svg>

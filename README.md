@@ -3,6 +3,16 @@
 This repository contains a Firefox extension that disables image loading on
 selected websites and can sync the blocked-site list through Firefox Sync.
 
+## Preview
+
+Popup preview:
+
+![Popup preview](assets/preview-popup.svg)
+
+Settings preview:
+
+![Settings preview](assets/preview-options.svg)
+
 ## Features
 
 - Blocks network image requests on the sites you choose.
@@ -45,8 +55,26 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build-xpi.ps1
 The packaged file will be created in `dist/` with a name like:
 
 ```text
-site-image-blocker-example.com-0.1.0.xpi
+site-image-blocker-example.com-0.2.0.xpi
 ```
+
+## GitHub Releases
+
+This repository includes a GitHub Actions workflow that builds and publishes the
+extension package whenever you push a tag that starts with `v`.
+
+Example:
+
+```powershell
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+That workflow will:
+
+- build the `.xpi` package
+- upload it as a workflow artifact
+- attach it to a GitHub Release automatically
 
 ## How to keep it installed after restart
 
@@ -92,3 +120,7 @@ on temporary loading every session.
   extension can use `browser.storage.sync`.
 - If you install by temporary loading from `about:debugging`, Firefox removes
   the add-on after the browser restarts.
+
+## License
+
+This project is released under the Unlicense. See `LICENSE`.
