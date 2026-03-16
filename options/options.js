@@ -91,17 +91,13 @@ function renderRules(domains) {
     host.className = "rule-host";
     host.textContent = domain;
 
-    const copy = document.createElement("span");
-    copy.className = "rule-copy";
-    copy.textContent = `Also matches subdomains of ${domain}.`;
-
     const removeButton = document.createElement("button");
     removeButton.className = "remove-button";
     removeButton.type = "button";
     removeButton.textContent = "Remove";
     removeButton.dataset.domain = domain;
 
-    meta.append(host, copy);
+    meta.append(host);
     item.append(meta, removeButton);
     ruleListElement.appendChild(item);
   }

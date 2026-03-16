@@ -94,7 +94,8 @@ h1 {
 }
 
 .intro {
-  max-width: 60ch;
+  max-width: none;
+  white-space: nowrap;
   color: var(--muted-text);
 }
 
@@ -188,6 +189,12 @@ button {
   margin-bottom: 0;
 }
 
+.list-note {
+  margin-bottom: 10px;
+  color: var(--subtle-text);
+  font-size: 14px;
+}
+
 .rule-list {
   margin: 0;
   padding: 0;
@@ -217,11 +224,6 @@ button {
   word-break: break-word;
 }
 
-.rule-copy {
-  color: var(--subtle-text);
-  font-size: 14px;
-}
-
 .remove-button {
   flex-shrink: 0;
   padding: 10px 14px;
@@ -238,6 +240,10 @@ button {
   .page-shell {
     width: min(100vw - 24px, 880px);
     padding-top: 28px;
+  }
+
+  .intro {
+    white-space: normal;
   }
 
   .hero-topline {
