@@ -8,19 +8,20 @@
   <rect width="1280" height="760" fill="url(#page)" />
   <rect x="90" y="54" width="1100" height="132" rx="28" fill="#fffaf1" stroke="#dbc9a6" stroke-width="2" />
   <text x="138" y="108" fill="#566555" font-size="16" font-family="Segoe UI, Arial, sans-serif" letter-spacing="4">FIREFOX EXTENSION</text>
-  <text x="138" y="158" fill="#1f1d19" font-size="48" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Choose where images should be blocked</text>
+  <text x="138" y="150" fill="#1f1d19" font-size="42" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Choose where images</text>
+  <text x="138" y="192" fill="#1f1d19" font-size="42" font-family="Segoe UI, Arial, sans-serif" font-weight="700">should be blocked</text>
   <rect x="90" y="220" width="1100" height="180" rx="28" fill="#ffffff" fill-opacity="0.75" stroke="#d8c7a7" stroke-width="2" />
   <text x="130" y="268" fill="#1f1d19" font-size="24" font-family="Segoe UI, Arial, sans-serif" font-weight="700">New blocked host</text>
   <rect x="130" y="290" width="700" height="58" rx="18" fill="#fffcf6" stroke="#cdbb97" stroke-width="2" />
   <text x="156" y="327" fill="#6a6355" font-size="22" font-family="Segoe UI, Arial, sans-serif">example.com</text>
   <rect x="850" y="290" width="130" height="58" rx="18" fill="#235243" />
-  <text x="894" y="327" fill="#fbf7ef" font-size="22" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Add</text>
-  <rect x="130" y="364" width="180" height="44" rx="22" fill="#ffffff" stroke="#235243" stroke-width="2" />
-  <rect x="330" y="364" width="160" height="44" rx="22" fill="#ffffff" stroke="#235243" stroke-width="2" />
-  <rect x="510" y="364" width="160" height="44" rx="22" fill="#ffffff" stroke="#235243" stroke-width="2" />
-  <text x="158" y="392" fill="#235243" font-size="18" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Reload affected tabs</text>
-  <text x="370" y="392" fill="#235243" font-size="18" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Export list</text>
-  <text x="552" y="392" fill="#235243" font-size="18" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Import list</text>
+  <text x="915" y="327" text-anchor="middle" fill="#fbf7ef" font-size="22" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Add</text>
+  <rect x="130" y="364" width="220" height="44" rx="22" fill="#ffffff" stroke="#235243" stroke-width="2" />
+  <rect x="370" y="364" width="160" height="44" rx="22" fill="#ffffff" stroke="#235243" stroke-width="2" />
+  <rect x="550" y="364" width="160" height="44" rx="22" fill="#ffffff" stroke="#235243" stroke-width="2" />
+  <text x="240" y="392" text-anchor="middle" fill="#235243" font-size="18" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Reload affected tabs</text>
+  <text x="450" y="392" text-anchor="middle" fill="#235243" font-size="18" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Export list</text>
+  <text x="630" y="392" text-anchor="middle" fill="#235243" font-size="18" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Import list</text>
   <rect x="90" y="432" width="1100" height="252" rx="28" fill="#ffffff" fill-opacity="0.75" stroke="#d8c7a7" stroke-width="2" />
   <text x="130" y="486" fill="#1f1d19" font-size="28" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Blocked hosts</text>
   <text x="1034" y="486" fill="#5e584d" font-size="20" font-family="Segoe UI, Arial, sans-serif">3 rules</text>
@@ -28,8 +29,9 @@
   <text x="130" y="566" fill="#1f1d19" font-size="26" font-family="Segoe UI, Arial, sans-serif" font-weight="700">example.com</text>
   <text x="130" y="596" fill="#5e584d" font-size="18" font-family="Segoe UI, Arial, sans-serif">Also matches subdomains of example.com.</text>
   <rect x="994" y="540" width="130" height="42" rx="20" fill="none" stroke="#7a3528" stroke-width="2" />
-  <text x="1030" y="568" fill="#7a3528" font-size="18" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Remove</text>
+  <text x="1059" y="568" text-anchor="middle" fill="#7a3528" font-size="18" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Remove</text>
   <line x1="130" y1="620" x2="1150" y2="620" stroke="#d8c7a7" stroke-width="2" />
   <text x="130" y="662" fill="#1f1d19" font-size="26" font-family="Segoe UI, Arial, sans-serif" font-weight="700">cdn.example.net</text>
-  <text x="130" y="692" fill="#5e584d" font-size="18" font-family="Segoe UI, Arial, sans-serif">Saved rules are stored in Firefox Sync when Add-ons sync is enabled.</text>
+  <rect x="130" y="680" width="500" height="32" rx="16" fill="#d9efe4" />
+  <text x="154" y="701" fill="#235243" font-size="17" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Saved rules are stored in Firefox Sync</text>
 </svg>
