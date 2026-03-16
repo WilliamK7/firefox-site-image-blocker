@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Site Image Blocker</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="popup-shell">
+      <p class="eyebrow">Firefox extension</p>
+      <h1>Site Image Blocker</h1>
+      <p class="sync-badge" id="syncStatus">Checking storage...</p>
+      <p class="status" id="status">Checking the current tab...</p>
+      <div class="domain-card">
+        <span class="label">Current host</span>
+        <strong id="domain">Loading...</strong>
+      </div>
+      <p class="rule" id="ruleHint">Rules apply after the tab reloads.</p>
+      <button class="primary-button" id="toggleButton" type="button" disabled>
+        Loading...
+      </button>
+      <button class="secondary-button" id="optionsButton" type="button">
+        Manage all rules
+      </button>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

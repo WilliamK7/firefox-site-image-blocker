@@ -1,0 +1,334 @@
+const STORAGE_KEY = "blockedDomains";
+
+let blockedDomainsCache = [];
+let blockedDomainsReady = false;
+let blockedDomainsPromise = null;
+let primaryStorageAreaName = "sync";
+
+function getStorageArea(areaName) {
+  return browser.storage[areaName];
+}
+
+function getStorageMetadata() {
+  return {
+    storageArea: primaryStorageAreaName,
+    usesFirefoxSync: primaryStorageAreaName === "sync"
+  };
+}
+
+function normalizeDomainInput(rawValue) {
+  if (typeof rawValue !== "string") {
+    return null;
+  }
+
+  const trimmedValue = rawValue.trim().toLowerCase();
+
+  if (!trimmedValue) {
+    return null;
+  }
+
+  const schemeLessValue = trimmedValue.replace(/^\*\./, "");
+
+  try {
+    const parsedUrl = new URL(
+      schemeLessValue.includes("://")
+        ? schemeLessValue
+        : `https://${schemeLessValue}`
+    );
+
+    return parsedUrl.hostname.replace(/\.$/, "");
+  } catch {
+    if (/^[a-z0-9.-]+$/.test(schemeLessValue)) {
+      return schemeLessValue.replace(/\.$/, "");
+    }
+
+    return null;
+  }
+}
+
+function normalizeDomainList(rawDomains) {
+  if (!Array.isArray(rawDomains)) {
+    return [];
+  }
+
+  return [...new Set(rawDomains.map(normalizeDomainInput).filter(Boolean))].sort();
+}
+
+function findMatchingDomain(rawValue, blockedDomains) {
+  const normalizedDomain = normalizeDomainInput(rawValue);
+
+  if (!normalizedDomain) {
+    return null;
+  }
+
+  return [...blockedDomains]
+    .sort((left, right) => right.length - left.length)
+    .find(
+      (blockedDomain) =>
+        normalizedDomain === blockedDomain ||
+        normalizedDomain.endsWith(`.${blockedDomain}`)
+    ) ?? null;
+}
+
+async function loadBlockedDomains() {
+  if (blockedDomainsReady) {
+    return blockedDomainsCache;
+  }
+
+  if (!blockedDomainsPromise) {
+    blockedDomainsPromise = initializeStorage().then(() => blockedDomainsCache)
+      .finally(() => {
+        blockedDomainsPromise = null;
+      });
+  }
+
+  return blockedDomainsPromise;
+}
+
+async function mirrorDomainsToLocal(domains) {
+  await browser.storage.local.set({ [STORAGE_KEY]: domains });
+}
+
+async function initializeStorage() {
+  const localResult = await browser.storage.local.get({ [STORAGE_KEY]: [] });
+  const localDomains = normalizeDomainList(localResult[STORAGE_KEY]);
+  const syncStorage = getStorageArea("sync");
+
+  if (syncStorage) {
+    try {
+      const syncResult = await syncStorage.get({ [STORAGE_KEY]: [] });
+      let syncDomains = normalizeDomainList(syncResult[STORAGE_KEY]);
+
+      if (!syncDomains.length && localDomains.length) {
+        syncDomains = localDomains;
+        await syncStorage.set({ [STORAGE_KEY]: syncDomains });
+      }
+
+      blockedDomainsCache = syncDomains;
+      primaryStorageAreaName = "sync";
+      blockedDomainsReady = true;
+      await mirrorDomainsToLocal(syncDomains);
+      return blockedDomainsCache;
+    } catch (error) {
+      console.warn("storage.sync is unavailable, falling back to storage.local", error);
+    }
+  }
+
+  blockedDomainsCache = localDomains;
+  primaryStorageAreaName = "local";
+  blockedDomainsReady = true;
+  return blockedDomainsCache;
+}
+
+async function saveBlockedDomains(rawDomains) {
+  blockedDomainsCache = normalizeDomainList(rawDomains);
+  blockedDomainsReady = true;
+  const storageArea = getStorageArea(primaryStorageAreaName);
+
+  await storageArea.set({ [STORAGE_KEY]: blockedDomainsCache });
+
+  if (primaryStorageAreaName === "sync") {
+    await mirrorDomainsToLocal(blockedDomainsCache);
+  }
+
+  return blockedDomainsCache;
+}
+
+async function getDomainState(rawDomain) {
+  const domain = normalizeDomainInput(rawDomain);
+  const blockedDomains = await loadBlockedDomains();
+  const matchedDomain = domain
+    ? findMatchingDomain(domain, blockedDomains)
+    : null;
+
+  return {
+    blocked: Boolean(matchedDomain),
+    domain,
+    domains: blockedDomains,
+    matchedDomain,
+    ...getStorageMetadata()
+  };
+}
+
+async function addDomain(rawDomain) {
+  const domain = normalizeDomainInput(rawDomain);
+
+  if (!domain) {
+    return {
+      error: "INVALID_DOMAIN",
+      ok: false
+    };
+  }
+
+  const blockedDomains = await loadBlockedDomains();
+
+  if (blockedDomains.includes(domain)) {
+    return {
+      domain,
+      domains: blockedDomains,
+      ok: true,
+      ...getStorageMetadata()
+    };
+  }
+
+  const nextDomains = await saveBlockedDomains([...blockedDomains, domain]);
+
+  return {
+    domain,
+    domains: nextDomains,
+    ok: true,
+    ...getStorageMetadata()
+  };
+}
+
+async function removeDomain(rawDomain) {
+  const domain = normalizeDomainInput(rawDomain);
+
+  if (!domain) {
+    return {
+      error: "INVALID_DOMAIN",
+      ok: false
+    };
+  }
+
+  const blockedDomains = await loadBlockedDomains();
+  const nextDomains = await saveBlockedDomains(
+    blockedDomains.filter((blockedDomain) => blockedDomain !== domain)
+  );
+
+  return {
+    domain,
+    domains: nextDomains,
+    ok: true,
+    ...getStorageMetadata()
+  };
+}
+
+async function toggleDomain(rawDomain, rawTargetDomain) {
+  const domain = normalizeDomainInput(rawDomain);
+
+  if (!domain) {
+    return {
+      error: "INVALID_DOMAIN",
+      ok: false
+    };
+  }
+
+  const blockedDomains = await loadBlockedDomains();
+  const targetDomain = normalizeDomainInput(rawTargetDomain);
+  const matchedDomain =
+    targetDomain && blockedDomains.includes(targetDomain)
+      ? targetDomain
+      : findMatchingDomain(domain, blockedDomains);
+
+  if (matchedDomain) {
+    const nextDomains = await saveBlockedDomains(
+      blockedDomains.filter((blockedDomain) => blockedDomain !== matchedDomain)
+    );
+
+    return {
+      blocked: false,
+      domain,
+      domains: nextDomains,
+      matchedDomain: null,
+      ok: true,
+      removedDomain: matchedDomain,
+      ...getStorageMetadata()
+    };
+  }
+
+  const nextDomains = await saveBlockedDomains([...blockedDomains, domain]);
+
+  return {
+    blocked: true,
+    domain,
+    domains: nextDomains,
+    matchedDomain: domain,
+    ok: true,
+    ...getStorageMetadata()
+  };
+}
+
+function shouldBlockImageRequest(details, blockedDomains) {
+  if (!blockedDomains.length) {
+    return false;
+  }
+
+  return [details.documentUrl, details.originUrl].some((urlValue) =>
+    findMatchingDomain(urlValue, blockedDomains)
+  );
+}
+
+browser.runtime.onInstalled.addListener(() => {
+  void loadBlockedDomains();
+});
+
+browser.runtime.onStartup.addListener(() => {
+  void loadBlockedDomains();
+});
+
+browser.storage.onChanged.addListener((changes, areaName) => {
+  if (!changes[STORAGE_KEY]) {
+    return;
+  }
+
+  if (primaryStorageAreaName === "sync" && areaName === "local") {
+    return;
+  }
+
+  if (areaName !== primaryStorageAreaName) {
+    return;
+  }
+
+  blockedDomainsCache = normalizeDomainList(changes[STORAGE_KEY].newValue);
+  blockedDomainsReady = true;
+
+  if (areaName === "sync") {
+    void mirrorDomainsToLocal(blockedDomainsCache);
+  }
+});
+
+browser.runtime.onMessage.addListener((message) => {
+  switch (message?.type) {
+    case "add-domain":
+      return addDomain(message.domain);
+
+    case "get-blocked-domains":
+      return loadBlockedDomains().then((domains) => ({
+        domains,
+        ...getStorageMetadata()
+      }));
+
+    case "get-domain-state":
+      return getDomainState(message.domain);
+
+    case "get-storage-info":
+      return loadBlockedDomains().then(() => getStorageMetadata());
+
+    case "remove-domain":
+      return removeDomain(message.domain);
+
+    case "toggle-domain":
+      return toggleDomain(message.domain, message.targetDomain);
+
+    default:
+      return undefined;
+  }
+});
+
+browser.webRequest.onBeforeRequest.addListener(
+  async (details) => {
+    const blockedDomains = await loadBlockedDomains();
+
+    if (!shouldBlockImageRequest(details, blockedDomains)) {
+      return {};
+    }
+
+    return { cancel: true };
+  },
+  {
+    types: ["image", "imageset"],
+    urls: ["<all_urls>"]
+  },
+  ["blocking"]
+);

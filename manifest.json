@@ -1,0 +1,45 @@
+{
+  "manifest_version": 2,
+  "name": "Site Image Blocker",
+  "version": "0.2.0",
+  "description": "Block images on selected websites and sync your blocked-site list across Firefox profiles.",
+  "icons": {
+    "48": "icons/site-image-blocker.svg",
+    "96": "icons/site-image-blocker.svg"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "icons/site-image-blocker.svg",
+      "32": "icons/site-image-blocker.svg",
+      "64": "icons/site-image-blocker.svg"
+    },
+    "default_title": "Site Image Blocker",
+    "default_popup": "popup/popup.html"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/hide-images.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "site-image-blocker@example.com"
+    }
+  }
+}

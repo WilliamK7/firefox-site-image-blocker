@@ -1,0 +1,93 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: linear-gradient(180deg, #f7f4ec 0%, #ece6d8 100%);
+  color: #1d1d1b;
+  font: 14px/1.45 "Segoe UI", sans-serif;
+}
+
+.popup-shell {
+  padding: 18px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #6a6355;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.sync-badge {
+  display: inline-flex;
+  margin: 0 0 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(31, 92, 79, 0.12);
+  color: #1f5c4f;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status,
+.rule {
+  margin: 0 0 12px;
+  color: #4a463f;
+}
+
+.domain-card {
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid #d9cfba;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.label {
+  display: block;
+  margin-bottom: 4px;
+  color: #6a6355;
+  font-size: 12px;
+}
+
+#domain {
+  display: block;
+  word-break: break-word;
+  font-size: 16px;
+}
+
+button {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 999px;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.primary-button {
+  margin-bottom: 10px;
+  border: none;
+  background: #1f5c4f;
+  color: #f9f5ec;
+}
+
+.secondary-button {
+  border: 1px solid #1f5c4f;
+  background: transparent;
+  color: #1f5c4f;
+}

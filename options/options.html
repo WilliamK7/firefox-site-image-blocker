@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Site Image Blocker Settings</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero">
+        <p class="eyebrow">Firefox extension</p>
+        <h1>Choose where images should be blocked</h1>
+        <p class="intro">
+          Add a host like <code>example.com</code> or paste a full URL. A rule
+          applies to the saved host and its subdomains.
+        </p>
+      </section>
+
+      <section class="panel">
+        <form id="addRuleForm" class="rule-form">
+          <label class="field-label" for="domainInput">New blocked host</label>
+          <div class="input-row">
+            <input
+              id="domainInput"
+              name="domain"
+              type="text"
+              placeholder="example.com"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <button type="submit">Add</button>
+          </div>
+        </form>
+        <p class="storage-note" id="storageNote">Checking whether Firefox Sync is available...</p>
+        <p class="feedback" id="feedback">Changes take effect after a page reload.</p>
+      </section>
+
+      <section class="panel">
+        <div class="list-header">
+          <h2>Blocked hosts</h2>
+          <span id="ruleCount">0 rules</span>
+        </div>
+        <ul class="rule-list" id="ruleList"></ul>
+        <p class="empty-state" id="emptyState">
+          No hosts added yet. Use the popup on a site you want to block, or add
+          one manually here.
+        </p>
+      </section>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>
