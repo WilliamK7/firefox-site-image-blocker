@@ -6,11 +6,17 @@ const importFileInput = document.getElementById("importFileInput");
 const importRulesButton = document.getElementById("importRulesButton");
 const reloadTabsButton = document.getElementById("reloadTabsButton");
 const storageNoteElement = document.getElementById("storageNote");
+const themeToggleButton = document.getElementById("themeToggleButton");
 const ruleCountElement = document.getElementById("ruleCount");
 const ruleListElement = document.getElementById("ruleList");
 const emptyStateElement = document.getElementById("emptyState");
 
+const THEME_STORAGE_KEY = "optionsThemeMode";
+const THEME_MODES = ["auto", "light", "dark"];
+
 let currentDomains = [];
+let currentThemeMode = "auto";
+const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
 function setFeedback(message, isError = false) {
   feedbackElement.textContent = message;
@@ -21,6 +27,42 @@ function setControlsDisabled(isDisabled) {
   reloadTabsButton.disabled = isDisabled;
   exportRulesButton.disabled = isDisabled;
   importRulesButton.disabled = isDisabled;
+}
+
+function getResolvedTheme(themeMode) {
+  if (themeMode === "dark" || themeMode === "light") {
+    return themeMode;
+  }
+
+  return systemThemeQuery.matches ? "dark" : "light";
+}
+
+function renderThemeButton() {
+  const label =
+    currentThemeMode.charAt(0).toUpperCase() + currentThemeMode.slice(1);
+  themeToggleButton.textContent = `Theme: ${label}`;
+}
+
+function applyTheme(themeMode) {
+  currentThemeMode = THEME_MODES.includes(themeMode) ? themeMode : "auto";
+  document.documentElement.dataset.theme = getResolvedTheme(currentThemeMode);
+  renderThemeButton();
+}
+
+async function loadThemePreference() {
+  const result = await browser.storage.local.get({
+    [THEME_STORAGE_KEY]: "auto"
+  });
+
+  applyTheme(result[THEME_STORAGE_KEY]);
+}
+
+async function cycleThemeMode() {
+  const currentIndex = THEME_MODES.indexOf(currentThemeMode);
+  const nextMode = THEME_MODES[(currentIndex + 1) % THEME_MODES.length];
+
+  applyTheme(nextMode);
+  await browser.storage.local.set({ [THEME_STORAGE_KEY]: nextMode });
 }
 
 function renderStorageStatus(storageArea) {
@@ -257,6 +299,26 @@ importFileInput.addEventListener("change", async () => {
     importFileInput.value = "";
     setControlsDisabled(false);
   }
+});
+
+themeToggleButton.addEventListener("click", () => {
+  void cycleThemeMode().catch((error) => {
+    console.error(error);
+    setFeedback("The theme preference could not be saved.", true);
+  });
+});
+
+systemThemeQuery.addEventListener("change", () => {
+  if (currentThemeMode !== "auto") {
+    return;
+  }
+
+  applyTheme("auto");
+});
+
+void loadThemePreference().catch((error) => {
+  console.error(error);
+  applyTheme("auto");
 });
 
 void refreshRules().catch((error) => {
