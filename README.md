@@ -11,12 +11,13 @@ selected websites and can sync the blocked-site list through Firefox Sync.
 - Provides an options page to add or remove blocked hosts manually.
 - Saves blocked hosts to Firefox Sync when available so the list can follow
   your Firefox profile to other desktop devices.
+- Injects the page-hiding script only on matching sites instead of every page.
 
 ## Project structure
 
 - `manifest.json`: Firefox extension manifest.
 - `background.js`: Request blocking and rule management.
-- `content/hide-images.js`: Hides image elements on matching pages.
+- `content/hide-images.js`: Hides image elements when injected on matching pages.
 - `icons/`: Toolbar and add-on manager icon assets.
 - `popup/`: Toolbar popup UI.
 - `options/`: Full settings page.
@@ -74,6 +75,8 @@ on temporary loading every session.
   storage instead of breaking rule updates.
 - The background script cancels requests of type `image` and
   `imageset` when the originating page matches one of your saved hosts.
+- The background script injects the content script only on matching `http` and
+  `https` pages so unrelated pages do not pay for the extra storage read.
 - The content script hides image tags and inline background images on matching
   pages for a cleaner result.
 

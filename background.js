@@ -281,6 +281,24 @@ function shouldBlockImageRequest(details, blockedDomains) {
   );
 }
 
+async function injectHideImagesScript(details) {
+  const blockedDomains = await loadBlockedDomains();
+
+  if (!findMatchingDomain(details.url, blockedDomains)) {
+    return;
+  }
+
+  try {
+    await browser.tabs.executeScript(details.tabId, {
+      file: "content/hide-images.js",
+      frameId: details.frameId,
+      runAt: "document_start"
+    });
+  } catch (error) {
+    console.warn("Failed to inject hide-images.js", error);
+  }
+}
+
 browser.runtime.onInstalled.addListener(() => {
   void loadBlockedDomains();
 });
@@ -336,6 +354,23 @@ browser.runtime.onMessage.addListener((message) => {
       return undefined;
   }
 });
+
+browser.webNavigation.onCommitted.addListener(
+  (details) => {
+    if (details.tabId < 0) {
+      return;
+    }
+
+    void injectHideImagesScript(details);
+  },
+  {
+    url: [
+      {
+        schemes: ["http", "https"]
+      }
+    ]
+  }
+);
 
 browser.webRequest.onBeforeRequest.addListener(
   async (details) => {
