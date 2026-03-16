@@ -2,11 +2,41 @@
   box-sizing: border-box;
 }
 
+:root {
+  --app-text: #1d1d1b;
+  --bg-end: #ece6d8;
+  --bg-start: #f7f4ec;
+  --card-bg: rgba(255, 255, 255, 0.72);
+  --card-border: #d9cfba;
+  --muted-text: #4a463f;
+  --primary-bg: #1f5c4f;
+  --primary-text: #f9f5ec;
+  --secondary-border: #1f5c4f;
+  --secondary-text: #1f5c4f;
+  --tag-bg: rgba(31, 92, 79, 0.12);
+  --tag-text: #1f5c4f;
+}
+
+html[data-theme="dark"] {
+  --app-text: #f1ebdd;
+  --bg-end: #111818;
+  --bg-start: #1b2624;
+  --card-bg: rgba(20, 27, 26, 0.82);
+  --card-border: #3f5b52;
+  --muted-text: #c7beae;
+  --primary-bg: #d5c49d;
+  --primary-text: #16211f;
+  --secondary-border: #8eb7a7;
+  --secondary-text: #d7eadf;
+  --tag-bg: rgba(184, 213, 200, 0.12);
+  --tag-text: #b8d5c8;
+}
+
 body {
   margin: 0;
   min-width: 320px;
-  background: linear-gradient(180deg, #f7f4ec 0%, #ece6d8 100%);
-  color: #1d1d1b;
+  background: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%);
+  color: var(--app-text);
   font: 14px/1.45 "Segoe UI", sans-serif;
 }
 
@@ -14,12 +44,24 @@ body {
   padding: 18px;
 }
 
+.topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
 .eyebrow {
-  margin: 0 0 6px;
+  margin: 0;
   color: #6a6355;
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+html[data-theme="dark"] .eyebrow {
+  color: #9cb5a9;
 }
 
 h1 {
@@ -28,13 +70,24 @@ h1 {
   line-height: 1.1;
 }
 
+.theme-toggle {
+  padding: 6px 10px;
+  border: 1px solid var(--secondary-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--secondary-text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .sync-badge {
   display: inline-flex;
   margin: 0 0 12px;
   padding: 5px 10px;
   border-radius: 999px;
-  background: rgba(31, 92, 79, 0.12);
-  color: #1f5c4f;
+  background: var(--tag-bg);
+  color: var(--tag-text);
   font-size: 12px;
   font-weight: 600;
 }
@@ -42,21 +95,21 @@ h1 {
 .status,
 .rule {
   margin: 0 0 12px;
-  color: #4a463f;
+  color: var(--muted-text);
 }
 
 .domain-card {
   margin-bottom: 12px;
   padding: 12px;
-  border: 1px solid #d9cfba;
+  border: 1px solid var(--card-border);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--card-bg);
 }
 
 .label {
   display: block;
   margin-bottom: 4px;
-  color: #6a6355;
+  color: var(--muted-text);
   font-size: 12px;
 }
 
@@ -82,12 +135,12 @@ button:disabled {
 .primary-button {
   margin-bottom: 10px;
   border: none;
-  background: #1f5c4f;
-  color: #f9f5ec;
+  background: var(--primary-bg);
+  color: var(--primary-text);
 }
 
 .secondary-button {
-  border: 1px solid #1f5c4f;
+  border: 1px solid var(--secondary-border);
   background: transparent;
-  color: #1f5c4f;
+  color: var(--secondary-text);
 }
