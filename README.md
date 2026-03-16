@@ -55,7 +55,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build-xpi.ps1
 The packaged file will be created in `dist/` with a name like:
 
 ```text
-site-image-blocker-example.com-0.2.0.xpi
+site-image-blocker-example.com-0.2.1.xpi
 ```
 
 ## GitHub Releases
@@ -66,8 +66,8 @@ extension package whenever you push a tag that starts with `v`.
 Example:
 
 ```powershell
-git tag v0.2.0
-git push origin v0.2.0
+git tag v0.2.1
+git push origin v0.2.1
 ```
 
 That workflow will:
@@ -88,6 +88,8 @@ installed add-on instead of a temporary one.
 3. Install the signed package in Firefox.
 
 This is the standard route for stable Firefox builds.
+For this repository, the easiest signing route is an unlisted submission.
+See `AMO_SUBMISSION.md` for a ready-to-use checklist and suggested metadata.
 
 ### Option 2: Use a development-focused Firefox build
 

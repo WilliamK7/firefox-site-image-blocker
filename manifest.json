@@ -1,8 +1,10 @@
 {
   "manifest_version": 2,
   "name": "Site Image Blocker",
-  "version": "0.2.0",
+  "version": "0.2.1",
+  "author": "WilliamK7",
   "description": "Block images on selected websites and sync your blocked-site list across Firefox profiles.",
+  "homepage_url": "https://github.com/WilliamK7/firefox-site-image-blocker",
   "icons": {
     "48": "icons/site-image-blocker.svg",
     "96": "icons/site-image-blocker.svg"
