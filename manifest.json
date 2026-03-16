@@ -35,7 +35,10 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "site-image-blocker@example.com"
+      "id": "site-image-blocker@example.com",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   }
 }

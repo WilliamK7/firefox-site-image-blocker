@@ -4,6 +4,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+Add-Type -AssemblyName System.IO.Compression
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $manifestPath = Join-Path $projectRoot "manifest.json"
 
@@ -23,10 +26,6 @@ $version = $manifest.version
 $outputRoot = Join-Path $projectRoot $OutputDir
 New-Item -ItemType Directory -Force -Path $outputRoot | Out-Null
 
-$tempDirName = "build-" + [guid]::NewGuid().ToString("N")
-$tempDir = Join-Path $outputRoot $tempDirName
-New-Item -ItemType Directory -Force -Path $tempDir | Out-Null
-
 $includePaths = @(
   "manifest.json",
   "background.js",
@@ -37,24 +36,51 @@ $includePaths = @(
   "popup"
 )
 
-foreach ($relativePath in $includePaths) {
-  $sourcePath = Join-Path $projectRoot $relativePath
+function Add-FileToArchive {
+  param(
+    [System.IO.Compression.ZipArchive]$Archive,
+    [string]$SourcePath,
+    [string]$EntryPath
+  )
+
+  $normalizedEntryPath = $EntryPath.Replace("\", "/")
+  $entry = $Archive.CreateEntry($normalizedEntryPath, [System.IO.Compression.CompressionLevel]::Optimal)
+
+  $entryStream = $entry.Open()
+  $fileStream = [System.IO.File]::OpenRead($SourcePath)
+
+  try {
+    $fileStream.CopyTo($entryStream)
+  } finally {
+    $fileStream.Dispose()
+    $entryStream.Dispose()
+  }
+}
+
+function Add-PathToArchive {
+  param(
+    [System.IO.Compression.ZipArchive]$Archive,
+    [string]$RootPath,
+    [string]$RelativePath
+  )
+
+  $sourcePath = Join-Path $RootPath $RelativePath
+
   if (-not (Test-Path $sourcePath)) {
-    throw "Required path is missing: $relativePath"
+    throw "Required path is missing: $RelativePath"
   }
 
-  $destinationPath = Join-Path $tempDir $relativePath
+  $item = Get-Item $sourcePath
 
-  if ((Get-Item $sourcePath) -is [System.IO.DirectoryInfo]) {
-    Copy-Item -Path $sourcePath -Destination $destinationPath -Recurse
-  } else {
-    $destinationParent = Split-Path -Parent $destinationPath
-    if ($destinationParent) {
-      New-Item -ItemType Directory -Force -Path $destinationParent | Out-Null
+  if ($item -is [System.IO.DirectoryInfo]) {
+    foreach ($file in Get-ChildItem -Path $sourcePath -File -Recurse) {
+      $relativeEntryPath = $file.FullName.Substring($RootPath.Length).TrimStart('\', '/')
+      Add-FileToArchive -Archive $Archive -SourcePath $file.FullName -EntryPath $relativeEntryPath
     }
-
-    Copy-Item -Path $sourcePath -Destination $destinationPath
+    return
   }
+
+  Add-FileToArchive -Archive $Archive -SourcePath $sourcePath -EntryPath $RelativePath
 }
 
 $zipBaseName = "{0}-{1}" -f $safeId, $version
@@ -69,8 +95,18 @@ if (Test-Path $xpiPath) {
   Remove-Item $xpiPath -Force
 }
 
-Compress-Archive -Path (Join-Path $tempDir "*") -DestinationPath $zipPath -CompressionLevel Optimal
+$zipStream = [System.IO.File]::Open($zipPath, [System.IO.FileMode]::CreateNew)
+$archive = [System.IO.Compression.ZipArchive]::new($zipStream, [System.IO.Compression.ZipArchiveMode]::Create, $false)
+
+try {
+  foreach ($relativePath in $includePaths) {
+    Add-PathToArchive -Archive $archive -RootPath $projectRoot -RelativePath $relativePath
+  }
+} finally {
+  $archive.Dispose()
+  $zipStream.Dispose()
+}
+
 Move-Item -Path $zipPath -Destination $xpiPath
-Remove-Item -Path $tempDir -Recurse -Force
 
 Write-Host "Created package: $xpiPath"
